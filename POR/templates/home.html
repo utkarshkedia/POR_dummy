@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+</head>
+<body>
+{% if user.is_authenticated %}
+    <p><a href = "/logout">Logout</a></p>
+    <p>Hello {{details}}</p>
+{% else %}
+    <p><a href = "/login">Login</a> or <a href = "/register">Create account</a></p>
+
+{% endif %}
+</body>
+</html>
