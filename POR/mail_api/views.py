@@ -1,9 +1,27 @@
-from django.shortcuts import render,redirect,response
-from django.core.mail import send_mail
+from django.shortcuts import render,redirect,HttpResponse
+#from django.core.mail import send_mail
 from django.contrib.auth.models import Group,User
+import smtplib
+from email.message import EmailMessage
 
 # Create your views here.
-def mail(response):
+def send_mail(recepient_list,current_user):
+    msg = EmailMessage()
+    msg['Subject'] = 'Changes made by {}'.format(current_user)
+    msg['From'] = 'ukedia@nvidia.com'
+    msg['To'] = recepient_list
+    msg.set_content('The changed database name can be attached in the body')
+
+    with smtplib.SMTP('outlook.office365.com', 587) as smtp:
+        smtp.ehlo()
+        smtp.starttls()
+        smtp.ehlo()
+
+        #EMAIL_PWD = os.environ.get('EMAIL_PWD')
+        smtp.login('ukedia@nvidia.com', 'Ready2wrk@NVIDIA')
+        smtp.send_message(msg)
+
+def track_modifications(response):
     if response.user.is_authenticated:
         user_email = []
         current_user = response.user.username
@@ -20,13 +38,7 @@ def mail(response):
 
         recepient_emails = user_email + admin_emails
         print(recepient_emails)
-        send_mail(
-            "Modified",
-            current_user + " made changes",
-            "ukedia@nvidia.com",
-            recepient_emails,
-            auth_user = "ukedia@nvidia.com",
-            auth_password = "Ready2wrk@NVIDIA")
+        send_mail(recepient_emails,current_user)
         return redirect('/')
     else:
         return ('/')
