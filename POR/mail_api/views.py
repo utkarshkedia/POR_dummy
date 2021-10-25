@@ -7,10 +7,15 @@ from email.message import EmailMessage
 # Create your views here.
 def send_mail(recepient_list,current_user):
     msg = EmailMessage()
-    msg['Subject'] = 'Changes made by {}'.format(current_user)
+    msg['Subject'] = 'Changes made by {} in the POR Page'.format(current_user)
     msg['From'] = 'ukedia@nvidia.com'
     msg['To'] = recepient_list
-    msg.set_content('The changed database name can be attached in the body')
+    #msg.set_content('The changed database name can be attached in the body')
+    msg.__setitem__("Importance","High")
+    f = open("D:\\POR_Automation\\POR\\templates\\mail_template.html",'r')
+    mail_content = f.read()
+    f.close()
+    msg.add_alternative(mail_content.format(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1),subtype='html')
 
     with smtplib.SMTP('outlook.office365.com', 587) as smtp:
         smtp.ehlo()
